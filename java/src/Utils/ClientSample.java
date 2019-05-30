@@ -1,4 +1,4 @@
-package tcp;
+package Utils;
 
 //File Name GreetingClient.java
 import java.net.*;

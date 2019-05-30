@@ -1,0 +1,11 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "CodeLens (Launch) - ServerSample",
+      "request": "launch",
+      "mainClass": "tcp.ServerSample",
+      "projectName": "Socket"
+    }
+  ]
+}
