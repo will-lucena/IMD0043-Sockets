@@ -34,11 +34,6 @@ while True:
 
    # Pegando dados do cliente
    data=c.recv(1024)
-   
-   a=""
-
-   for i in range(0,len(data)):
-      a=a+data[i]
 
    if not data:
      break
@@ -46,7 +41,7 @@ while True:
    # 4. ENVIANDO DADOS PARA O CLIENTE
    
    # Imprimindo a mensagem recebida do cliente
-   print a
+   print data
 
    # 5. ENCERRANDO A CONEXAO
  
