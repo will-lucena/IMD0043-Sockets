@@ -55,6 +55,16 @@ Abra outro terminal e execute o cliente:
 
 		python client.py
 
+## Compilando e Rodando TCP (no caminho: python/tcp/):
+
+Abra um terminal e ative o servidor:
+
+		python3 server.py
+
+Abra outro terminal e execute o cliente:
+
+		python3 client.py
+
 
 # JAVA
 
@@ -88,5 +98,5 @@ implemente os mesmos exercícios utilizando as linguagens python e java!
 	• Indique qual a sua linguagem de preferência para futuras implementações utilizando sockets
 
 
-Programa desenvolvido por _Bianca Santiago_ (*bianca.santiago72@gmail.com*), _Clarissa Soares_ (*clahzita@gmail.com*), _William Lucena_ (*williamaster1@gmail.com*), 2019.1
+Programa desenvolvido por _Bianca Santiago_ (*bianca.santiago72@gmail.com*), _Clarissa Soares_ (*clahzita@gmail.com*), _William Lucena_ (*will.lucen4@gmail.com*), 2019.1
 
