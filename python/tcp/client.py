@@ -23,10 +23,10 @@ PORT = 54321
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
 
-    input_string = input("Insira os dados que deseja enviar: -> ")
-    s.sendall('Mensagem ' + input_string + ' recebida as ' + view_hora)
+    #input_string = input("Insira os dados que deseja enviar: -> ")
+    #s.sendall('Mensagem ' + input_string + ' recebida as ' + view_hora)
 
-    #s.sendall(b'Concetado')
+    s.sendall(b'Concetado')
     
     data = s.recv(1024)
 
