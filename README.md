@@ -4,6 +4,8 @@
 
 # C++
 
+## Material de Apoio
+
 Multithreading em C++ : 
 
 https://www.tutorialspoint.com/cplusplus/cpp_multithreading.htm
@@ -43,7 +45,7 @@ Multithreading em Python : https://www.tutorialspoint.com/python/python_multithr
 Sockets em Python : https://www.tutorialspoint.com/python/python_networking.htm
 
 
-## Compilando e Rodando (no caminho: python/udp/):
+## Compilando e Rodando UDP (no caminho: python/udp/):
 
 Abra um terminal e ative o servidor:
 
@@ -55,6 +57,8 @@ Abra outro terminal e execute o cliente:
 
 
 # JAVA
+
+## Material de Apoio
 
 Multithreading em Java : https://www.tutorialspoint.com/java/java_multithreading.htm
 
