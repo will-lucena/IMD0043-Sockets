@@ -11,16 +11,20 @@ hora_atual = datetime.now()
 # para personalizar o formato da hora
 view_hora = hora_atual.strftime('%H:%M')
 
+# Importando a biblioteca de socket
 import socket
 
-HOST = '127.0.0.1'  # O nome do host ou endereço IP do servidor
-PORT = 54321        # A porta usada pelo servidor
+# O nome do host ou endereço IP do servidor
+HOST = '127.0.0.1'  
+
+# A porta usada pelo servidor
+PORT = 54321        
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
 
     input_string = input("Insira os dados que deseja enviar: -> ")
-    s.sendall(b'Mensagem ' + input_string + b' recebida as ' + view_hora)
+    s.sendall('Mensagem ' + input_string + ' recebida as ' + view_hora)
 
     #s.sendall(b'Concetado')
     

@@ -42,6 +42,7 @@ while True:
    
    # Imprimindo a mensagem recebida do cliente
    print data
+   #c.sendall(data)
 
    # 5. ENCERRANDO A CONEXAO
  
