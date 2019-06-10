@@ -30,7 +30,7 @@ while True:
  
    # Esteblecendo conexao com o cliente.
    c, addr = s.accept()     
-   print 'Got connection from', addr
+   print 'Tenho conexao com ', addr
 
    # Pegando dados do cliente
    data=c.recv(1024)
