@@ -4,7 +4,9 @@
 
 # C++
 
-Multithreading em C++ https://www.tutorialspoint.com/cplusplus/cpp_multithreading.htm
+Multithreading em C++ : 
+
+https://www.tutorialspoint.com/cplusplus/cpp_multithreading.htm
 
 Sockets em C++ : 
 
@@ -32,6 +34,7 @@ https://www.freebsd.org/doc/en_US.ISO8859-1/books/developers-handbook/sockets-es
 # PYTHON
 
 ## Material de Apoio
+
 Multithreading em Python : https://www.tutorialspoint.com/python/python_multithreading.htm
 
 Sockets em Python : https://www.tutorialspoint.com/python/python_networking.htm
