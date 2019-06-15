@@ -7,15 +7,25 @@
 #include <string.h> /* memset() */
 #include <iostream>
 #include <cstdlib>
+#include <ctime> /*hora */
+#include <chrono>
+
 #define LOCAL_SERVER_PORT 1500
 #define MAX_MSG 100
+
 using namespace std;
+
+
+
+
 int main(int argc, char *argv[])
 {
   int sd, rc, n;
   socklen_t cliLen;
   struct sockaddr_in cliAddr, servAddr;
   char msg[MAX_MSG];
+
+
   /* 1. CRIA O SOCKET */
   sd = socket(AF_INET, SOCK_DGRAM, 0);
   if (sd < 0)
@@ -50,7 +60,14 @@ int main(int argc, char *argv[])
       continue;
     }
     /* IMPRIME A MENSAGEM RECEBIDA */
-    cout << argv[0] << ": de " << inet_ntoa(cliAddr.sin_addr) << ":UDP(" << ntohs(cliAddr.sin_port) << ") : " << msg << endl;
+
+    //Hora
+    std::chrono::system_clock::time_point today = std::chrono::system_clock::now();
+    time_t tt;
+    tt = std::chrono::system_clock::to_time_t ( today );
+    
+    cout << argv[0] << ": de " << inet_ntoa(cliAddr.sin_addr) << ":UDP(" << ntohs(cliAddr.sin_port) <<
+                       ") : Mensagem: " << msg << " - recebida em " <<  ctime(&tt) << "(hora local)" << endl;
   } /* FIM DO LOOP INFINITO */
   return 0;
 }

@@ -20,8 +20,8 @@ https://www.freebsd.org/doc/en_US.ISO8859-1/books/developers-handbook/sockets-es
 
 ## Compilando (no caminho: c++/):
 
-		g++ udpserver.cpp -o udpsrv
-		g++ udpclient.cpp -o udpcli
+		g++ -std=c++11 udpserver.cpp -o udpsrv
+		g++ -std=c++11 udpclient.cpp -o udpcli 
 
 ## Rodando (no caminho: c++/):
 
