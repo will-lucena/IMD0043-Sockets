@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
   n = read(newsockfd,msg,MAX_MSG-1);
   if (n < 0)
   {
-    cout << argv[0] << ": erro na leitura do de socket"
+    cout << argv[0] << ": erro na leitura de socket "
          << LOCAL_SERVER_PORT << endl;
     exit(1);
   } 

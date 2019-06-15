@@ -23,6 +23,12 @@ https://www.freebsd.org/doc/en_US.ISO8859-1/books/developers-handbook/sockets-es
 		g++ -std=c++11 udpserver.cpp -o udpsrv
 		g++ -std=c++11 udpclient.cpp -o udpcli 
 
+		g++ -std=c++11 tcpserver.cpp -o tcpsrv
+		g++ -std=c++11 tcpclient.cpp -o tcpcli 
+
+		g++ -std=c++11 -pthread -lpthread tcpservermulti.cpp -o tcpsrvmult
+		g++ -std=c++11 tcpclientmulti.cpp -o tcpclimult 
+
 ## Rodando (no caminho: c++/):
 
 Abra um terminal e ative o servidor:
