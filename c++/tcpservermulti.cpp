@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
     cliLen = sizeof(cliAddr);
 
 /* 4. ACCEPT*/
+    cout << argv[0] << ": Aguardando conexão"<< i+1 << "..." << endl;
     newsockfd = accept(sockfd, (struct sockaddr *) &cliAddr, &cliLen);
     if (newsockfd < 0)
     {
@@ -87,7 +88,8 @@ int main(int argc, char *argv[])
 
     mythreads[i] = thread(socketThread,&newsockfd,argv[0], ntohs(cliAddr.sin_port)); 
 
-    
+        
+
     if( i >= MAX_CON)
     {
       i = 0;
@@ -100,8 +102,11 @@ int main(int argc, char *argv[])
       i = 0;
     }
 
-    
+    i++;
   }
+
+
+
   close(sockfd);
   return 0;
 }
@@ -116,9 +121,11 @@ void * socketThread(int* nSocket, char* server, short unsigned int porta)
 /* 5. RECEBENDO MENSAGEM DO CLIENTE*/
     m.lock();
 
+    //cout << server << ": Lendo mensagem do cliente " << porta << "..." << endl;
     memset(&msg, '0', sizeof(msg));
 
     n = read(newSocket,msg,MAX_MSG-1);
+    m.unlock();
     if (n < 0)
     {
       cout << server << ": erro na leitura do socket " << LOCAL_SERVER_PORT << endl;
@@ -135,17 +142,17 @@ void * socketThread(int* nSocket, char* server, short unsigned int porta)
 
     
 /* 6. ENVIANDO MENSAGEM DO CLIENTE*/
+    m.lock();
     string msgStr = msg;
     buffer = "Mensagem " + msgStr;
     buffer += " recebida em ";
     buffer += ctime(&tt);
     buffer += " (hora local)";
-
-    m.unlock();
-
+    
     sleep(1);
-
+    //cout << server << ": Enviando resposta para o cliente " << porta << "..." << endl;
     n = write(newSocket, buffer.c_str() , strlen(buffer.c_str()) + 1);
+    m.unlock();
 
     if( n < 0)
     {
