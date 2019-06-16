@@ -13,6 +13,7 @@
 #include <thread>
 #include <mutex>
 #include <vector>
+#include <string>
 
 #define LOCAL_SERVER_PORT 1500
 #define MAX_MSG 256
@@ -21,46 +22,10 @@
 using namespace std;
 
 char msg[MAX_MSG];
-char buffer[MAX_MSG];
+string buffer;
 mutex m;
 
-
-
-void * socketThread(int* nSocket)
-{
-  int newSocket = *(nSocket);
- // int newSocket = *((int *)arg);
-  int n;
-
-/* 5. RECEBENDO MENSAGEM DO CLIENTE*/
-  memset(&msg, '0', sizeof(msg));
-  n = read(newSocket,msg,MAX_MSG-1);
-  if (n < 0)
-  {
-    cout << ": erro na leitura do de socket" << LOCAL_SERVER_PORT << endl;
-    exit(1);
-  } 
-
-//Hora
-  std::chrono::system_clock::time_point today = std::chrono::system_clock::now();
-  time_t tt;
-  tt = std::chrono::system_clock::to_time_t ( today );
-
-  cout << "Servidor: Mensagem de :TCP(porta) ->  " << msg << " - recebida em " <<  ctime(&tt) << " (hora local)" << endl;
-
-  m.lock();
-/* 6. ENVIANDO MENSAGEM DO CLIENTE*/
-  memset(&buffer, '0', sizeof(buffer));
-  sprintf (buffer, "Mensagem %s recebida em  %.24s\r (hora local)", msg, ctime(&tt));
-  m.unlock();
-
-  sleep(1);
-  send(newSocket, buffer, sizeof(buffer), 0);
-  cout << "Saindo de socketThread \n" << endl;
-  close(newSocket);
-
-}
-
+void * socketThread(int* nSocket, char* server, short unsigned int porta);
 
 int main(int argc, char *argv[])
 {
@@ -89,8 +54,7 @@ int main(int argc, char *argv[])
   rc = bind(sockfd, (struct sockaddr *)&servAddr, sizeof(servAddr));
   if (rc < 0)
   {
-    cout << argv[0] << ": nao foi possivel associar a porta"
-    << LOCAL_SERVER_PORT << endl;
+    cout << argv[0] << ": nao foi possivel associar a porta " << LOCAL_SERVER_PORT << endl;
     exit(1);
   }
   cout << argv[0] << ": aguardando por dados na porta TCP(" << LOCAL_SERVER_PORT << ")" << endl;
@@ -121,9 +85,8 @@ int main(int argc, char *argv[])
     cout << argv[0] << ": estou conectado com " << inet_ntoa(cliAddr.sin_addr) << " na porta "
     << ntohs(cliAddr.sin_port) << endl;
 
+    mythreads[i] = thread(socketThread,&newsockfd,argv[0], ntohs(cliAddr.sin_port)); 
 
-    mythreads[i] = thread(socketThread,&newsockfd); 
-  
     
     if( i >= MAX_CON)
     {
@@ -141,4 +104,58 @@ int main(int argc, char *argv[])
   }
   close(sockfd);
   return 0;
+}
+
+
+void * socketThread(int* nSocket, char* server, short unsigned int porta)
+{
+  int newSocket = *(nSocket);
+ // int newSocket = *((int *)arg);
+  int n;
+  while(1){
+/* 5. RECEBENDO MENSAGEM DO CLIENTE*/
+    m.lock();
+
+    memset(&msg, '0', sizeof(msg));
+
+    n = read(newSocket,msg,MAX_MSG-1);
+    if (n < 0)
+    {
+      cout << server << ": erro na leitura do socket " << LOCAL_SERVER_PORT << endl;
+      close(newSocket);
+      exit(1);
+    } 
+
+//Hora
+    std::chrono::system_clock::time_point today = std::chrono::system_clock::now();
+    time_t tt;
+    tt = std::chrono::system_clock::to_time_t ( today );
+
+    cout << server << ": Mensagem de TCP(" << porta << "): " << msg << "\nRecebida em (hora local): " <<  ctime(&tt) << endl;
+
+    
+/* 6. ENVIANDO MENSAGEM DO CLIENTE*/
+    string msgStr = msg;
+    buffer = "Mensagem " + msgStr;
+    buffer += " recebida em ";
+    buffer += ctime(&tt);
+    buffer += " (hora local)";
+
+    m.unlock();
+
+    sleep(1);
+
+    n = write(newSocket, buffer.c_str() , strlen(buffer.c_str()) + 1);
+
+    if( n < 0)
+    {
+      cout << server << ": Falha no envio da mensagem." << endl;
+      close(newSocket);
+      exit(1);
+    }
+
+  }
+  cout << "Saindo de socketThread \n" << endl;
+  close(newSocket);
+
 }
