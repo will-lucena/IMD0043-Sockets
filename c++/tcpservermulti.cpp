@@ -123,8 +123,8 @@ int main(int argc, char *argv[])
 
 
     mythreads[i] = thread(socketThread,&newsockfd); 
+  
     
-
     if( i >= MAX_CON)
     {
       i = 0;

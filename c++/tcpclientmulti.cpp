@@ -8,44 +8,47 @@
 #include <sys/time.h> /* select() */
 #include <iostream>
 #include <cstdlib>
+#include <thread>
+//#include <boost/algorithm/string.hpp>    
+
+
 #define REMOTE_SERVER_PORT 1500
 #define MAX_MSG 256
+#define MAX_CON 5
+
+
 using namespace std;
-int main(int argc, char *argv[])
+
+
+void * clientThread(int nThread, char*server, char* host)
 {
-  int sockfd, rc, i, cn, n;
-  struct sockaddr_in cliAddr, remoteServAddr;
+
+  cout << "In the thread" << endl;
+
+  int clientSocket, rc, i, cn, n;
+  struct sockaddr_in remoteServAddr;
   struct hostent * h;
+  string msgToSend;
   char msgReceived[MAX_MSG];
-  string msgToSent;
-
-
-  /* VERIFICA OS ARGUMENTOS PASSADOS POR LINHA DE COMANDO */
-  if (argc < 3)
-  {
-    cout << "Uso : " << argv[0]
-    << " <servidor> <mensagem1> ... <mensagemN>" << endl;
-    exit(1);
-  }
+  socklen_t addr_size;
 
   /* 1. CRIA O SOCKET */
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  if (sockfd < 0)
+  clientSocket = socket(PF_INET, SOCK_STREAM, 0);
+  if (clientSocket < 0)
   {
-    cout << argv[0] << ": nao foi possivel abrir o socket" << endl;
+    cout << server << ": nao foi possivel abrir o socket" << endl;
     exit(1);
   }
 
   /* OBTEM O ENDERECO IP e PESQUISA O NOME NO DNS */
-  h = gethostbyname(argv[1]);
+  h = gethostbyname(host);
   if (h == NULL) {
-    cout << argv[0] << ": host desconhecido " << argv[1] << endl;
+    cout << server <<  ": host desconhecido " << host << endl;
     exit(1);
   }
-  cout << argv[0] << ": enviando dados para " << h->h_name
+  cout << server << ": enviando dados para " << h->h_name
   << " (IP : " << inet_ntoa(*(struct in_addr *)h->h_addr_list[0])
   << ")" << endl;
-
 
   /* CONFIGURANDO ESTRUTURA REFERENTE AO HOST REMOTO (SERVIDOR) */
   //memset(remoteServAddr, '0' ,sizeof(remoteServAddr));
@@ -55,55 +58,79 @@ int main(int argc, char *argv[])
   remoteServAddr.sin_port = htons(REMOTE_SERVER_PORT);
 
 
-  cn = connect(sockfd, (struct sockaddr *)&remoteServAddr, sizeof(remoteServAddr));
+  memset(remoteServAddr.sin_zero, '\0', sizeof remoteServAddr.sin_zero);
+  //Connect the socket to the server using the address
+  addr_size = sizeof remoteServAddr;
+
+  cn = connect(clientSocket, (struct sockaddr *)&remoteServAddr, addr_size);
   if(cn<0){
-    cout << argv[0] << ": falha de conexão com a porta ou problema de ip" << endl;
+    cout << server << ": falha de conexão com a porta ou problema de ip" << endl;
     exit(1);
   }
 
-  //Cliente enviando mensagem até que digite sair
- // while (1) {
+  string sair = "sair";
 
-    for (i = 2; i < argc; i++)
+  while(1) {
+
+    // cout << "Digite a mensagem:" << endl;
+    // getline(msgToSend);
+
+    // const std::string lower_str = boost::algorithm::to_lower_copy(msgToSend);
+
+    // if (lower_str == sair){
+    //   cout << "Encerrando conexão." << endl;
+    //   close(sockfd);
+    //   return 0;
+    // }
+
+
+    msgToSend = "Hello, I am thread number " + to_string(nThread);
+    
+    
+    if( send(clientSocket , msgToSend.c_str() , strlen(msgToSend.c_str()) , 0) < 0)
     {
-
-      if (!strcmp(argv[i], "sair")){
-        cout << "Igual" << endl;
-        close(sockfd);
-        exit(0);
-      }
-
-      msgToSent += argv[i];
-      msgToSent += " ";
-
-
-    }
-
-    n = write(sockfd, msgToSent.c_str(), strlen(msgToSent.c_str()) + 1);
-      if (n < 0)
-      {
-        cout << argv[0] << ": erro na escrita para socket - " << msgToSent << endl;
-        close(sockfd);
-        exit(1);
-      }
-
-    memset(msgReceived, '0' ,sizeof(msgReceived));
-
-    n = read(sockfd, msgReceived, MAX_MSG-1);
-    if (n < 0)
-    {
-      cout << argv[0] << ": erro na leitura do socket" << endl;
-      close(sockfd);
+      cout << server << ": Falha no envio da mensagem." << endl;
+      close(clientSocket);
       exit(1);
     }
 
-    cout << argv[0] << ": Mensagem do servidor -> " << msgReceived << endl;
+    //Ler a mensagem do servidor
+    if(recv(clientSocket, msgReceived, MAX_MSG, 0) < 0)
+    {
+      cout << server << ": Recebimento falhou." << endl;
+      close(clientSocket);
+      exit(1);
+    }
+
+    cout << server << ": Mensagem recebida -> " << msgReceived << endl;
+
+  }
+
+  close(clientSocket);
+}
 
 
- // }
-  
-  
-  close(sockfd);
+int main(int argc, char *argv[])
+{
+  int i = 0;
+  thread mythreads[MAX_CON];
+
+  while(i< MAX_CON)
+  {
+
+    mythreads[i] = thread(clientThread, i, argv[0], argv[1]);
+    i++;
+  }
+
+  sleep(20);
+
+  i = 0;
+  while(i< MAX_CON)
+  {
+    if(mythreads[i].joinable()){
+      mythreads[i++].join();
+    }
+  }
   
   return 0;
 }
