@@ -20,14 +20,14 @@ HOST = '127.0.0.1'
 # A porta usada pelo servidor
 PORT = 54321        
 
+# 1. CRIACAO DO SOCKET
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
 
-    #input_string = input("Insira os dados que deseja enviar: -> ")
-    #s.sendall('Mensagem ' + input_string + ' recebida as ' + view_hora)
-
-    s.sendall(b'Concetado')
+    input_string = input("Mensagem a ser enviada: ")
+    s.send(str.encode('Mensagem ' + input_string + ' recebida as ' + view_hora))
     
     data = s.recv(1024)
 
 print('Received', repr(data))
+s.close()

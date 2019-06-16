@@ -17,11 +17,11 @@ port = 12345
 # Servidor ouvindo pedidos providos de 
 # outros computadores na rede
 s.bind(('', port))        
-print "socket ligado a %s" %(port)
+print "Socket ligado a porta %s" %(port)
 
 # Colocando o socket em modo escuta
 s.listen(5)     
-print "socket esta ouvindo a rede"      
+print "Socket esta ouvindo a rede"      
 
 # 3. RECEBENDO DADOS
 
@@ -30,10 +30,10 @@ while True:
  
    # Esteblecendo conexao com o cliente.
    c, addr = s.accept()     
-   print 'Tenho conexao com ', addr
+   print 'Servidor: estou conectado com ', addr
 
    # Pegando dados do cliente
-   data=c.recv(1024)
+   data = c.recv(1024)
 
    if not data:
      break

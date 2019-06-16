@@ -29,7 +29,7 @@ s.connect(('127.0.0.1', port))
 # 3. ENVIANDO DADOS
 
 # Enviando dados ao servidor
-input_string = raw_input("Insira os dados que deseja enviar: -> ")
+input_string = raw_input("Mensagem a ser enviada: ")
 s.sendall('Mensagem ' + input_string + ' recebida as ' + view_hora)
 
 # 4. RECEBENDO DADOS
