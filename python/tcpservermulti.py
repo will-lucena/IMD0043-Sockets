@@ -20,7 +20,7 @@ import sys
 HOST = '127.0.0.1'  
 
 # Porta para escutar (portas nao privilegiadas sao > 1023)
-PORT = 54321        
+PORT = 1500        
 
 # 1. SOCKET
 # socket.socket() cria um objeto de socket
