@@ -17,7 +17,7 @@
 
 #define LOCAL_SERVER_PORT 1500
 #define MAX_MSG 256
-#define MAX_CON 2
+#define MAX_CON 5
 
 using namespace std;
 
@@ -130,12 +130,6 @@ void * socketThread(int* nSocket, char* server, short unsigned int porta)
 
     m.lock(); // inicio bloqueio
     string msgStr = msg;
-  
-    
-    if (msgStr == "sair") { 
-      cout << server << ": Servidor encerrando em TCP(" << porta << ")..." << endl; 
-      break; 
-    }
     
 
     n = 0; 
@@ -166,6 +160,11 @@ void * socketThread(int* nSocket, char* server, short unsigned int porta)
       close(newSocket);
       exit(1);
     }   
+
+    if (msgStr == "sair") { 
+      cout << server << ": Servidor encerrando em TCP(" << porta << ")..." << endl; 
+      break; 
+    }
 
   }
   cout << server << ": Saindo de socketThread em TCP(" << porta << ")\n" << endl;

@@ -13,7 +13,6 @@
 
 #define REMOTE_SERVER_PORT 1500
 #define MAX_MSG 256
-#define MAX_CON 5
 
 
 using namespace std;
@@ -78,7 +77,7 @@ int main(int argc, char *argv[])
   //Loop de comunicação, enquanto o cliente não digitar sair
   while(1) {
 
-    cout << "Digite a mensagem:" << endl;
+    cout << argv[0] << ": Digite a mensagem:";
     getline(cin,msgToSend);
 
     // Enviar mensagem para servidor
@@ -89,12 +88,6 @@ int main(int argc, char *argv[])
       cout << argv[0] << ": Falha no envio da mensagem." << endl;
       close(clientSocket);
       exit(1);
-    }
-
-    if (msgToSend == sair){
-      cout << argv[0] << "Cliente encerrando conexão." << endl;
-      close(clientSocket);
-      return 0;
     }
     
     //Ler a mensagem do servidor
@@ -112,6 +105,10 @@ int main(int argc, char *argv[])
 
     cout << argv[0] << ": Do servidor -> " << msgReceived << endl;
 
+    if (msgToSend == sair){
+      cout << argv[0] << ": Cliente encerrando conexão." << endl;
+      break;
+    }
 
 
   }
