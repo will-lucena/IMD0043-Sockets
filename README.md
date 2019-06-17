@@ -124,8 +124,17 @@ Abra outro terminal e execute o cliente:
 
 ## Material de Apoio
 
-* Multithreading em Java : https://www.tutorialspoint.com/java/java_multithreading.htm
-* Sockets em Java : https://www.tutorialspoint.com/java/java_networking.htm
+* Multithreading em Java : 
+
+https://www.tutorialspoint.com/java/java_multithreading.htm
+
+https://www.caelum.com.br/apostila-java-orientacao-objetos/apendice-sockets/#soluo-do-sistema-de-chat
+
+* Sockets em Java : 
+
+https://www.tutorialspoint.com/java/java_networking.htm
+
+https://www.geeksforgeeks.org/iterate-map-java/
 
 ## Compilando (no caminho java/src/Application)
 
@@ -144,10 +153,6 @@ o mesmo para o caso inverso.
 
 Para desconectar um cliente basta digitar "sair"
 
-## Referências
-
-* https://www.geeksforgeeks.org/iterate-map-java/
-* https://www.caelum.com.br/apostila-java-orientacao-objetos/apendice-sockets/#soluo-do-sistema-de-chat
 
 # RESULTADOS ESPERADOS
 
