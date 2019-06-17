@@ -110,10 +110,10 @@ na aula anterior.
 
 4. [X] Tomando como base o código implementado no itens anteriores,
 implemente os mesmos exercícios utilizando as linguagens python e java!
-	• Documente o seu código
-	• Seu código deve apresentar as mesmas funcionalidades da versão C++
-	• Ao final, apresente um relatório indicando as dificuldades, vantagens e desvantagens da programação em socket para cada linguagem
-	• Indique qual a sua linguagem de preferência para futuras implementações utilizando sockets
+	* Documente o seu código
+	* Seu código deve apresentar as mesmas funcionalidades da versão C++
+	* Ao final, apresente um relatório indicando as dificuldades, vantagens e desvantagens da programação em socket para cada linguagem
+	* Indique qual a sua linguagem de preferência para futuras implementações utilizando sockets
 
 
 Programa desenvolvido por _Bianca Santiago_ (*bianca.santiago72@gmail.com*), _Clarissa Soares_ (*clahzita@gmail.com*), _William Lucena_ (*will.lucen4@gmail.com*), 2019.1
