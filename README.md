@@ -20,28 +20,52 @@ https://www.freebsd.org/doc/en_US.ISO8859-1/books/developers-handbook/sockets-es
 
 https://dzone.com/articles/parallel-tcpip-socket-server-with-multi-threading
 
-## Compilando (no caminho: c++/):
+## Compilando e Rodando UDP (no caminho: c++/):
+Abra um terminal e compile:
 
 		g++ -std=c++11 udpserver.cpp -o udpsrv
 		g++ -std=c++11 udpclient.cpp -o udpcli 
-
-		g++ -std=c++11 tcpserver.cpp -o tcpsrv
-		g++ -std=c++11 tcpclient.cpp -o tcpcli 
-
-		g++ -std=c++11 -pthread -lpthread tcpservermulti.cpp -o tcpsrvmult
-		g++ -std=c++11 tcpclientmulti.cpp -o tcpclimult 
-
-## Rodando (no caminho: c++/):
-
-Abra um terminal e ative o servidor:
+		
+Ative o servidor:
 
 		./udpsrv
 
-Abra outro terminal e execute o cliente:
-
-		./udpcli localhost testando à envia a mensagem “testando” ao servidor local
+Abra outro terminal e execute o cliente (./udpcli <servidor> <mensagem 1> <mensagemN>):
+		
+		./udpcli localhost testandp envio de mensagem “testando” ao servidor local
 		./udpcli 127.0.0.1 teste1 teste2 à envia as mensagens “teste1” e “teste2” ao servidor local
-		./udpcli 10.7.23.15 teste3 à envia a mensagem “teste3” ao servidor remoto 10.7.23.15 (supondo que o servidor esteja a executar neste host)
+		./udpcli 10.7.23.15 teste3 à envia a mensagem “teste3” ao servidor remoto 10.7.23.15
+		(supondo que o servidor esteja a executar neste host)
+
+## Compilando e Rodando TCP (no caminho: c++/):
+Abra um terminal e compile:
+
+		g++ -std=c++11 tcpserver.cpp -o tcpsrv
+		g++ -std=c++11 tcpclient.cpp -o tcpcli 
+		
+Ative o servidor:
+
+		./tcpsrv
+
+Abra outro terminal e execute o cliente (./tcpcli <servidor> <mensagem 1> <mensagemN>):
+		
+		./tcpcli localhost testando envio de mensagem
+
+## Compilando e Rodando TCP Multithreading (no caminho: c++/):
+Abra um terminal e compile:
+
+		g++ -std=c++11 -pthread -lpthread tcpservermulti.cpp -o tcpsrvmult
+		g++ -std=c++11 tcpclientmulti.cpp -o tcpclimult 
+		
+Abra um terminal e ative o servidor:
+
+		./tcpsrvmult
+
+Abra outro terminal e execute o cliente (./tcpclimult <servidor>):
+
+		./tcpclimult localhost
+		
+Quando solicitado, digite a mensagem e aguarde a resposta do servidor, quando quiser encerrar a conexão com servidor, digite "sair".
 
 
 # PYTHON
