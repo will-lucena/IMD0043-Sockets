@@ -18,7 +18,7 @@ import socket
 HOST = '127.0.0.1'  
 
 # A porta usada pelo servidor
-PORT = 54321        
+PORT = 1500        
 
 # 1. SOCKET
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -1,12 +1,12 @@
 # Importando a biblioteca de socket
 import socket 
 
-# O nome do host ou endereço IP do servidor
+# O nome do host ou endereco IP do servidor
 HOST = '127.0.0.1'  
 
 # Definindo a porta a qual o cliente quer se conectar
 # Nesse caso 12345 (server)
-PORT = 12345 
+PORT = 1500 
 
 # Importando a biblioteca de datetime
 from datetime import datetime

@@ -6,7 +6,7 @@ HOST = ''
 
 # Reservando uma porta no computador local
 # nesse caso, a porta eh 12345
-PORT = 12345 
+PORT = 1500 
 
 # 1. CRIACAO DO SOCKET 
 
@@ -21,7 +21,7 @@ print "socket criado com sucesso"
 # Campo IP vazio
 # Servidor ouvindo pedidos providos de 
 # outros computadores na rede
-s.bind(('', PORT))        
+s.bind((HOST, PORT))        
 print "Socket ligado a porta %s" %(PORT)
 
 # Colocando o socket em modo escuta
