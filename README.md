@@ -109,6 +109,16 @@ Abra outro terminal e execute o cliente:
 
 		python3 tcpclient.py
 
+## Compilando e Rodando TCP Multithreading (no caminho: python/):
+
+Abra um terminal e ative o servidor:
+
+		python3 tcpservermulti.py
+
+Abra outro terminal e execute o cliente:
+
+		python3 tcpclientmulti.py
+
 
 # JAVA
 
