@@ -48,30 +48,40 @@ Abra outro terminal e execute o cliente:
 
 ## Material de Apoio
 
-Multithreading em Python : https://www.tutorialspoint.com/python/python_multithreading.htm
+Multithreading em Python : 
 
-Sockets em Python : https://www.tutorialspoint.com/python/python_networking.htm
+https://www.tutorialspoint.com/python/python_multithreading.htm
+
+Sockets em Python : 
+
+https://www.tutorialspoint.com/python/python_networking.htm
+
+https://realpython.com/python-sockets/#tcp-sockets
+
+https://wiki.python.org.br/SocketBasico
+
+https://pymotw.com/3/socket/tcp.html
 
 
-## Compilando e Rodando UDP (no caminho: python/udp/):
+## Compilando e Rodando UDP (no caminho: python/):
 
 Abra um terminal e ative o servidor:
 
-		python server.py
+		python udpserver.py
 
 Abra outro terminal e execute o cliente:
 
-		python client.py
+		python udpclient.py
 
-## Compilando e Rodando TCP (no caminho: python/tcp/):
+## Compilando e Rodando TCP (no caminho: python/):
 
 Abra um terminal e ative o servidor:
 
-		python3 server.py
+		python3 tcpserver.py
 
 Abra outro terminal e execute o cliente:
 
-		python3 client.py
+		python3 tcpclient.py
 
 
 # JAVA
@@ -90,15 +100,15 @@ a mensagem “Mensagem XXX recebida às 99h99 (hora local)”. Considere que o c
 mensagem XXX e esperará pela resposta do servidor. Ao receber a resposta, deverá imprimir na
 tela.
 
-2. [ ] Tomando como base o código implementado no item anterior, implemente um
+2. [X] Tomando como base o código implementado no item anterior, implemente um
 cliente/servidor para o mesmo fim que utilize socket TCP.
 
-3. [ ] Tomando como base o código implementado no item anterior, altere o código para
+3. [X] Tomando como base o código implementado no item anterior, altere o código para
 permitir que o cliente possa enviar N mensagens pelo terminal (até que digite “sair”). Permita
 ainda que o servidor atenda múltiplos clientes, a exemplo de um servidor web, como discutido
 na aula anterior.
 
-4. [ ] Tomando como base o código implementado no itens anteriores,
+4. [X] Tomando como base o código implementado no itens anteriores,
 implemente os mesmos exercícios utilizando as linguagens python e java!
 	• Documente o seu código
 	• Seu código deve apresentar as mesmas funcionalidades da versão C++
