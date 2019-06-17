@@ -1,40 +1,71 @@
 package Application;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Server {
+
+  private int port;
+  private Map<Socket, PrintStream> clients;
+
+  public Server(Integer port) {
+    this.port = port;
+    clients = new HashMap<Socket, PrintStream>();
+  }
+
+  public void run() throws IOException {
+    ServerSocket server = new ServerSocket(this.port);
+    System.out.println("Server running on port " + this.port);
+
+    while (true) {
+      Socket client = server.accept();
+      System.out.println("new connection with " + client.getInetAddress().getHostAddress());
+
+      PrintStream printStream = new PrintStream(client.getOutputStream());
+
+      if (this.clients.containsKey(client)){
+        this.clients.replace(client, printStream);
+      } else {
+        this.clients.put(client, printStream);
+      }
+
+      ClientHandler handler = new ClientHandler(client, this);
+      new Thread(handler).start();
+    }
+  }
+
+  public void dispatchMessage(String msg, Socket senderClient) throws IOException {
+    if (verifyQuit(msg)) {
+      closeConnection(senderClient);
+    } else {
+      LocalDateTime now = LocalDateTime.now();
+      for (Map.Entry<Socket, PrintStream> entry : this.clients.entrySet()) {
+        if (entry.getKey() != senderClient){
+          entry.getValue().println(createMessage(msg, now));
+        }
+      }
+    }
+  }
+
   public static void main(String[] args) throws IOException {
     if (args.length < 1) {
       throw new IOException("invalid port");
     }
 
-    ServerSocket server = new ServerSocket(Integer.parseInt(args[0]));
-    System.out.println("Server running on port " + args[0]);
-
-    Socket client = server.accept();
-    System.out.println("new connection with " + client.getInetAddress().getHostAddress());
-
-    LocalDateTime now = LocalDateTime.now();
-
-    Scanner scanner = new Scanner(client.getInputStream());
-    while (scanner.hasNextLine()) {
-      String input = scanner.nextLine();
-      if (verifyQuit(input)) {
-        closeConnection(scanner, server, client);
-      } else {
-        System.out.println(createMessage(input, now));
-      }
-    }
+    new Server(Integer.parseInt(args[0])).run();
   }
 
-  private static void closeConnection(Scanner scanner, ServerSocket server, Socket client) throws IOException {
-    scanner.close();
-    server.close();
+  private void closeConnection(Socket client) throws IOException {
+    System.out.println(client.getInetAddress() + " disconnected from the server");
     client.close();
   }
 
