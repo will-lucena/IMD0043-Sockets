@@ -1,6 +1,13 @@
 # Importando a biblioteca de socket
 import socket 
 
+# O nome do host ou endereço IP do servidor
+HOST = '127.0.0.1'  
+
+# Definindo a porta a qual o cliente quer se conectar
+# Nesse caso 12345 (server)
+PORT = 12345 
+
 # Importando a biblioteca de datetime
 from datetime import datetime
 
@@ -17,14 +24,10 @@ view_hora = hora_atual.strftime('%H:%M')
 # Criando um objeto socket 
 s = socket.socket()        
 
-# 2. LIGACAO (BIND) DOS ENDERECOS COM A PORTA
- 
-# Definindo a porta a qual o cliente quer se conectar
-# Nesse caso 12345 (server)
-port = 12345               
+# 2. LIGACAO (BIND) DOS ENDERECOS COM A PORTA              
  
 # Conectando-se ao servidor no computador local
-s.connect(('127.0.0.1', port))
+s.connect((HOST, PORT))
 
 # 3. ENVIANDO DADOS
 

@@ -1,23 +1,28 @@
 # Importando a biblioteca de socket
 import socket 
 
+# Endereco de interface padrao de loopback (localhost)
+HOST = ''  
+
+# Reservando uma porta no computador local
+# nesse caso, a porta eh 12345
+PORT = 12345 
+
 # 1. CRIACAO DO SOCKET 
 
 # Criando um objeto socket
 s = socket.socket()                 
 print "socket criado com sucesso"   
  
-# Reservando uma porta no computador local
-# nesse caso, a porta eh 12345
-port = 12345      
+     
 
 # 2. LIGACAO (BIND) DOS ENDERECOS COM A PORTA
 
 # Campo IP vazio
 # Servidor ouvindo pedidos providos de 
 # outros computadores na rede
-s.bind(('', port))        
-print "Socket ligado a porta %s" %(port)
+s.bind(('', PORT))        
+print "Socket ligado a porta %s" %(PORT)
 
 # Colocando o socket em modo escuta
 s.listen(5)     
