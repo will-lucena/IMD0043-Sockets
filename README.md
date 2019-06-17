@@ -114,10 +114,30 @@ Abra outro terminal e execute o cliente:
 
 ## Material de Apoio
 
-Multithreading em Java : https://www.tutorialspoint.com/java/java_multithreading.htm
+* Multithreading em Java : https://www.tutorialspoint.com/java/java_multithreading.htm
+* Sockets em Java : https://www.tutorialspoint.com/java/java_networking.htm
 
-Sockets em Java : https://www.tutorialspoint.com/java/java_networking.htm
+## Compilando (no caminho java/src/Application)
 
+1. javac Server.java Client.java MessageHandler.java ClientHandler.java
+
+## Executando
+
+1. Abra um terminal e execute java Application.Server *porta*
+2. Abra outro terminal e execute java Application.Client localhost *mesma porta do server*
+3. Abra outro terminal e execute java Application.Client localhost *mesma porta do server*
+
+## Notas
+
+Ao inicializar o servidor, o cliente A e o cliente B e enviar uma mensagem pelo cliente A ela so sera exibida no cliente B,
+o mesmo para o caso inverso.
+
+Para desconectar um cliente basta digitar "sair"
+
+## Referências
+
+* https://www.geeksforgeeks.org/iterate-map-java/
+* https://www.caelum.com.br/apostila-java-orientacao-objetos/apendice-sockets/#soluo-do-sistema-de-chat
 
 # RESULTADOS ESPERADOS
 

@@ -22,12 +22,21 @@ public class ClientHandler implements Runnable {
     Scanner scanner = new Scanner(this.client);
     while (scanner.hasNextLine()) {
       try {
-        server.dispatchMessage(scanner.nextLine(), this.socket);
+        String input = scanner.nextLine();
+        if (verifyQuit(input)) {
+          server.closeConnection(this.socket);
+        } else {
+          server.dispatchMessage(input, this.socket);
+        }
       } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
     }
     scanner.close();
+  }
+
+  private boolean verifyQuit(String content) {
+    return content.contains("sair");
   }
 }

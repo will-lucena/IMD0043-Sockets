@@ -32,9 +32,9 @@ public class Client {
       String input = scanner.nextLine();
 
       if (verifyQuit(input)){
+        printStream.println(input);
         closeConnection(printStream, scanner, client);
       }
-
       printStream.println(input);
     }
   }

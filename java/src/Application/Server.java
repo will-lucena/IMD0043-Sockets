@@ -28,11 +28,11 @@ public class Server {
 
     while (true) {
       Socket client = server.accept();
-      System.out.println("new connection with " + client.getInetAddress().getHostAddress());
+      System.out.println("New connection with " + client.getInetAddress().getHostAddress());
 
       PrintStream printStream = new PrintStream(client.getOutputStream());
 
-      if (this.clients.containsKey(client)){
+      if (this.clients.containsKey(client)) {
         this.clients.replace(client, printStream);
       } else {
         this.clients.put(client, printStream);
@@ -44,14 +44,10 @@ public class Server {
   }
 
   public void dispatchMessage(String msg, Socket senderClient) throws IOException {
-    if (verifyQuit(msg)) {
-      closeConnection(senderClient);
-    } else {
-      LocalDateTime now = LocalDateTime.now();
-      for (Map.Entry<Socket, PrintStream> entry : this.clients.entrySet()) {
-        if (entry.getKey() != senderClient){
-          entry.getValue().println(createMessage(msg, now));
-        }
+    LocalDateTime now = LocalDateTime.now();
+    for (Map.Entry<Socket, PrintStream> entry : this.clients.entrySet()) {
+      if (entry.getKey() != senderClient) {
+        entry.getValue().println(createMessage(msg, now));
       }
     }
   }
@@ -64,13 +60,9 @@ public class Server {
     new Server(Integer.parseInt(args[0])).run();
   }
 
-  private void closeConnection(Socket client) throws IOException {
+  public void closeConnection(Socket client) throws IOException {
     System.out.println(client.getInetAddress() + " disconnected from the server");
     client.close();
-  }
-
-  private static boolean verifyQuit(String content) {
-    return content.contains("sair");
   }
 
   private static String createMessage(String message, LocalDateTime now) {
