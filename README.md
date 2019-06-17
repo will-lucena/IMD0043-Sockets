@@ -56,6 +56,8 @@ Sockets em Python :
 
 https://www.tutorialspoint.com/python/python_networking.htm
 
+https://github.com/shauryauppal/Socket-Programming-Python
+
 https://realpython.com/python-sockets/#tcp-sockets
 
 https://wiki.python.org.br/SocketBasico
