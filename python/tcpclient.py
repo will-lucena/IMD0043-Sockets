@@ -21,17 +21,27 @@ HOST = '127.0.0.1'
 PORT = 54321        
 
 # 1. SOCKET
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
-    # 2. CONNECT
-    s.connect((HOST, PORT))
+# 2. CONNECT
+server_address = (HOST, PORT)
+print('Conectando em {} na porta {}'.format(*server_address))
+sock.connect(server_address)
+
+while True:
 
     # 3. SEND
-    input_string = input("Mensagem a ser enviada: ")
-    s.send(str.encode('Mensagem ' + input_string + ' recebida as ' + view_hora))
-    
-    # 4. RECV
-    data = s.recv(1024)
+    message = input("Digite mensagem a ser enviada: ")
+    print('Enviando {!r}'.format(message)  + ' as {!r}'.format(view_hora))
+    sock.sendall(message.encode())
 
-    # 5. CLOSE
-    s.close()
+    # 4. RECV
+    data = sock.recv(1024).decode()
+    print('Recebendo dados de volta do servidor')
+
+    if(message == 'sair'):
+        break
+
+# 5. CLOSE
+print('Encerrando socket')
+sock.close()
