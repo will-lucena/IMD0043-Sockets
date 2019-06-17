@@ -46,16 +46,17 @@ int main(int argc, char *argv[])
 
   /* OBTEM O ENDERECO IP e PESQUISA O NOME NO DNS */
   h = gethostbyname(argv[1]);
+
   if (h == NULL) {
     cout << argv[0] <<  ": host desconhecido " << argv[1] << endl;
     exit(1);
   }
+
   cout << argv[0] << ": enviando dados para " << h->h_name
   << " (IP : " << inet_ntoa(*(struct in_addr *)h->h_addr_list[0])
   << ")" << endl;
 
   /* CONFIGURANDO ESTRUTURA REFERENTE AO HOST REMOTO (SERVIDOR) */
-  //memset(remoteServAddr, '0' ,sizeof(remoteServAddr));
   remoteServAddr.sin_family = h->h_addrtype;
   memcpy((char *)&remoteServAddr.sin_addr.s_addr,
    h->h_addr_list[0], h->h_length);
@@ -63,9 +64,9 @@ int main(int argc, char *argv[])
 
 
   memset(remoteServAddr.sin_zero, '\0', sizeof remoteServAddr.sin_zero);
-  //Connect the socket to the server using the address
+  
+  /* CONECTA O SOCKET COM O SERVIDOR USANDO O ENDEREÇO */
   addr_size = sizeof remoteServAddr;
-
   cn = connect(clientSocket, (struct sockaddr *)&remoteServAddr, addr_size);
   if(cn<0){
     cout << argv[0] << ": falha de conexão com a porta ou problema de ip" << endl;
@@ -74,21 +75,13 @@ int main(int argc, char *argv[])
 
   string sair = "sair";
 
+  //Loop de comunicação, enquanto o cliente não digitar sair
   while(1) {
 
     cout << "Digite a mensagem:" << endl;
     getline(cin,msgToSend);
 
-    //const std::string lower_str = boost::algorithm::to_lower_copy(msgToSend);
-
-    if (msgToSend == sair){
-      cout << "Encerrando conexão." << endl;
-      close(clientSocket);
-      break;
-    }
-
-
-    // msgToSend = "Hello, I am thread number " + to_string(nThread);
+    // Enviar mensagem para servidor
     n = write(clientSocket, msgToSend.c_str() , strlen(msgToSend.c_str()) + 1);
 
     if( n < 0)
@@ -98,8 +91,16 @@ int main(int argc, char *argv[])
       exit(1);
     }
 
+    if (msgToSend == sair){
+      cout << argv[0] << "Cliente encerrando conexão." << endl;
+      close(clientSocket);
+      return 0;
+    }
+    
     //Ler a mensagem do servidor
      memset(msgReceived, '0' ,sizeof(msgReceived));
+    
+    n = 0;
 
     n = read(clientSocket, msgReceived, MAX_MSG-1);
     if (n < 0)
@@ -110,6 +111,8 @@ int main(int argc, char *argv[])
     }
 
     cout << argv[0] << ": Do servidor -> " << msgReceived << endl;
+
+
 
   }
 

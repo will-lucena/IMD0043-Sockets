@@ -18,6 +18,8 @@ https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/
 
 https://www.freebsd.org/doc/en_US.ISO8859-1/books/developers-handbook/sockets-essential-functions.html
 
+https://dzone.com/articles/parallel-tcpip-socket-server-with-multi-threading
+
 ## Compilando (no caminho: c++/):
 
 		g++ -std=c++11 udpserver.cpp -o udpsrv

@@ -17,7 +17,7 @@
 
 #define LOCAL_SERVER_PORT 1500
 #define MAX_MSG 256
-#define MAX_CON 5
+#define MAX_CON 2
 
 using namespace std;
 
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     cliLen = sizeof(cliAddr);
 
 /* 4. ACCEPT*/
-    cout << argv[0] << ": Aguardando conexão"<< i+1 << "..." << endl;
+    cout << argv[0] << ": Aguardando conexão "<< i+1 << "..." << endl;
     newsockfd = accept(sockfd, (struct sockaddr *) &cliAddr, &cliLen);
     if (newsockfd < 0)
     {
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 
     mythreads[i] = thread(socketThread,&newsockfd,argv[0], ntohs(cliAddr.sin_port)); 
 
-        
+    i++;
 
     if( i >= MAX_CON)
     {
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
       i = 0;
     }
 
-    i++;
+    
   }
 
 
@@ -119,50 +119,56 @@ void * socketThread(int* nSocket, char* server, short unsigned int porta)
   int n;
   while(1){
 /* 5. RECEBENDO MENSAGEM DO CLIENTE*/
-    m.lock();
-
-    //cout << server << ": Lendo mensagem do cliente " << porta << "..." << endl;
     memset(&msg, '0', sizeof(msg));
-
     n = read(newSocket,msg,MAX_MSG-1);
-    m.unlock();
     if (n < 0)
     {
-      cout << server << ": erro na leitura do socket " << LOCAL_SERVER_PORT << endl;
+      cout << server << ": erro na leitura do socket " << endl;
       close(newSocket);
       exit(1);
     } 
 
-//Hora
+    m.lock(); // inicio bloqueio
+    string msgStr = msg;
+  
+    
+    if (msgStr == "sair") { 
+      cout << server << ": Servidor encerrando em TCP(" << porta << ")..." << endl; 
+      break; 
+    }
+    
+
+    n = 0; 
+
+    // Informações sobre hora
     std::chrono::system_clock::time_point today = std::chrono::system_clock::now();
     time_t tt;
     tt = std::chrono::system_clock::to_time_t ( today );
 
-    cout << server << ": Mensagem de TCP(" << porta << "): " << msg << "\nRecebida em (hora local): " <<  ctime(&tt) << endl;
+    cout << server << ": Mensagem de TCP(" << porta << "): " << msgStr << "\n\tRecebida em (hora local): " <<  ctime(&tt) << endl;
 
     
-/* 6. ENVIANDO MENSAGEM DO CLIENTE*/
-    m.lock();
-    string msgStr = msg;
-    buffer = "Mensagem " + msgStr;
-    buffer += " recebida em ";
-    buffer += ctime(&tt);
-    buffer += " (hora local)";
+/* 7. ENVIANDO MENSAGEM RECEBIDA PARA O CLIENTE*/
     
+    buffer = "Mensagem " + msgStr;
+    buffer += " recebida em (hora local): ";
+    buffer += ctime(&tt);
+    
+    m.unlock(); // fim  bloqueio
+
     sleep(1);
-    //cout << server << ": Enviando resposta para o cliente " << porta << "..." << endl;
+
     n = write(newSocket, buffer.c_str() , strlen(buffer.c_str()) + 1);
-    m.unlock();
 
     if( n < 0)
     {
       cout << server << ": Falha no envio da mensagem." << endl;
       close(newSocket);
       exit(1);
-    }
+    }   
 
   }
-  cout << "Saindo de socketThread \n" << endl;
+  cout << server << ": Saindo de socketThread em TCP(" << porta << ")\n" << endl;
   close(newSocket);
 
 }
