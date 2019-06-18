@@ -140,7 +140,7 @@ https://www.geeksforgeeks.org/iterate-map-java/
 
 1. javac Server.java Client.java MessageHandler.java ClientHandler.java
 
-## Executando
+## Executando (no caminho java/src/)
 
 1. Abra um terminal e execute java Application.Server *porta*
 2. Abra outro terminal e execute java Application.Client localhost *mesma porta do server*

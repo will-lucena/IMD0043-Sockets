@@ -25,6 +25,7 @@ public class ClientHandler implements Runnable {
         String input = scanner.nextLine();
         if (verifyQuit(input)) {
           server.closeConnection(this.socket);
+          server.logoutMessage(this.socket);
         } else {
           server.dispatchMessage(input, this.socket);
         }

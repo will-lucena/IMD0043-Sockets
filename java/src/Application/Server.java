@@ -28,7 +28,7 @@ public class Server {
 
     while (true) {
       Socket client = server.accept();
-      System.out.println("New connection with " + client.getInetAddress().getHostAddress());
+      System.out.println(client.getInetAddress().getHostAddress() + " connected at " + this.port);
 
       PrintStream printStream = new PrintStream(client.getOutputStream());
 
@@ -47,7 +47,17 @@ public class Server {
     LocalDateTime now = LocalDateTime.now();
     for (Map.Entry<Socket, PrintStream> entry : this.clients.entrySet()) {
       if (entry.getKey() != senderClient) {
-        entry.getValue().println(createMessage(msg, now));
+        entry.getValue().println(entry.getKey().getInetAddress().getAddress() + " says " + msg);
+        System.out.println(entry.getKey().getInetAddress().getAddress() + " says " + msg);
+      }
+    }
+  }
+
+  public void logoutMessage(Socket sender){
+    for (Map.Entry<Socket, PrintStream> entry : this.clients.entrySet()) {
+      if (entry.getKey() != sender) {
+        entry.getValue().println(entry.getKey().getInetAddress().getAddress() + " logged out");
+        System.out.println(entry.getKey().getInetAddress().getAddress() + " logged out");
       }
     }
   }
