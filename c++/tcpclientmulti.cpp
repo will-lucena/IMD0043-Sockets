@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     }
     
     //Ler a mensagem do servidor
-     memset(msgReceived, '0' ,sizeof(msgReceived));
+    //memset(msgReceived, '0' ,sizeof(msgReceived));
     
     n = 0;
 

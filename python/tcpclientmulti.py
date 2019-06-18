@@ -27,7 +27,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
 # 2. CONNECT
 server_address = (HOST, PORT)
-print('Conectando em {} na porta {}'.format(*server_address))
+print('Conectando ao servidor {} na porta {}'.format(*server_address))
 sock.connect(server_address)
 
 while True:
