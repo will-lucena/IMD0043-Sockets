@@ -17,7 +17,7 @@
 
 #define LOCAL_SERVER_PORT 1500
 #define MAX_MSG 256
-#define MAX_CON 2
+#define MAX_CON 100
 
 using namespace std;
 
@@ -25,7 +25,7 @@ char msg[MAX_MSG];
 string buffer;
 mutex m;
 
-void * socketThread(int* nSocket, char* server, short unsigned int porta);
+void * socketThread(int* nSocket, char* server, short unsigned int portaClient, char * IPClient);
 
 int main(int argc, char *argv[])
 {
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     cout << argv[0] << ": estou conectado com " << inet_ntoa(cliAddr.sin_addr) << " na porta "
     << ntohs(cliAddr.sin_port) << endl;
 
-    mythreads[i] = thread(socketThread,&newsockfd,argv[0], ntohs(cliAddr.sin_port)); 
+    mythreads[i] = thread(socketThread,&newsockfd,argv[0], ntohs(cliAddr.sin_port), inet_ntoa(cliAddr.sin_addr)); 
 
     i++;
 
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 }
 
 
-void * socketThread(int* nSocket, char* server, short unsigned int porta)
+void * socketThread(int* nSocket, char* server, short unsigned int portaClient, char * IPClient)
 {
   int newSocket = *(nSocket);
  // int newSocket = *((int *)arg);
@@ -133,7 +133,7 @@ void * socketThread(int* nSocket, char* server, short unsigned int porta)
   
     
     if (msgStr == "sair") { 
-      cout << server << ": Servidor encerrando em TCP(" << porta << ")..." << endl; 
+      cout << server << ": Servidor encerrando em TCP(" << portaClient << ")..." << endl; 
       break; 
     }
     
@@ -145,7 +145,7 @@ void * socketThread(int* nSocket, char* server, short unsigned int porta)
     time_t tt;
     tt = std::chrono::system_clock::to_time_t ( today );
 
-    cout << server << ": Mensagem de TCP(" << porta << "): " << msgStr << "\n\tRecebida em (hora local): " <<  ctime(&tt) << endl;
+    cout << server << ": Mensagem de "<< IPClient << "TCP(" << portaClient << "): " << msgStr << "\nRecebida em (hora local): " <<  ctime(&tt);
 
     
 /* 7. ENVIANDO MENSAGEM RECEBIDA PARA O CLIENTE*/
@@ -168,7 +168,7 @@ void * socketThread(int* nSocket, char* server, short unsigned int porta)
     }   
 
   }
-  cout << server << ": Saindo de socketThread em TCP(" << porta << ")\n" << endl;
+  cout << server << ": "<< IPClient << "TCP(" << portaClient << "): Desconectou." << endl;
   close(newSocket);
 
 }

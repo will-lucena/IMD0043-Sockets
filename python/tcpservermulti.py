@@ -57,24 +57,27 @@ while True:
         pid = os.fork()
         if pid == 0:
             sock.close()
-            print('Concetado com ', client_address)
+            print('Conectado com ', client_address)
 
             # LOOP PARA RECEBER E RETRANSMITIR MENSAGENS
             while True:
 
                 # 5. RECV
                 data = connection.recv(1024).decode()
-                print('Mensagem {!r}'.format(data)  + ' recebida as {!r}'.format(view_hora))
+                print('##################################################################')
+                print('Mensagem {!r}'.format(data)  + ' recebida as {!r}'.format(view_hora) + ' por {!r}'.format(client_address))
                 if (data != 'sair' and data != ''):
 
                     # 6. SEND
                     print('Enviando dados de volta ao cliente')
                     connection.sendall(data.encode())
+                    print('##################################################################')
                 else:
                     print('Desconectando')
                     break
                     print (client_address, data)
             print ('Finalizando conexao do cliente', client_address)
+            print('##################################################################')
             connection.close()
             sys.exit(0)
         else:

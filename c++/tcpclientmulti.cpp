@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
   //Loop de comunicação, enquanto o cliente não digitar sair
   while(1) {
 
-    cout << "Digite a mensagem:" << endl;
+    cout << "Digite a mensagem: " << endl;
     getline(cin,msgToSend);
 
     // Enviar mensagem para servidor
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
     }
     
     //Ler a mensagem do servidor
-     memset(msgReceived, '0' ,sizeof(msgReceived));
+    //memset(msgReceived, '0' ,sizeof(msgReceived));
     
     n = 0;
 
