@@ -6,20 +6,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 public class Server {
 
   private int port;
-  private Map<Socket, PrintStream> clients;
+  private Map<Socket, Tuple> clients;
 
   public Server(Integer port) {
     this.port = port;
-    clients = new HashMap<Socket, PrintStream>();
+    clients = new HashMap<Socket, Tuple>();
   }
 
   public void run() throws IOException {
@@ -33,9 +30,12 @@ public class Server {
       PrintStream printStream = new PrintStream(client.getOutputStream());
 
       if (this.clients.containsKey(client)) {
-        this.clients.replace(client, printStream);
+        Tuple tuple = this.clients.get(client);
+        tuple.stream = printStream;
+        this.clients.replace(client, tuple);
       } else {
-        this.clients.put(client, printStream);
+        Tuple tuple = new Tuple("Default", printStream);
+        this.clients.put(client, tuple);
       }
 
       ClientHandler handler = new ClientHandler(client, this);
@@ -45,19 +45,20 @@ public class Server {
 
   public void dispatchMessage(String msg, Socket senderClient) throws IOException {
     LocalDateTime now = LocalDateTime.now();
-    for (Map.Entry<Socket, PrintStream> entry : this.clients.entrySet()) {
+    for (Map.Entry<Socket, Tuple> entry : this.clients.entrySet()) {
       if (entry.getKey() != senderClient) {
-        entry.getValue().println(entry.getKey().getInetAddress().getAddress() + " says " + msg);
-        System.out.println(entry.getKey().getInetAddress().getAddress() + " says " + msg);
+        entry.getValue().stream.println(createMessage(entry.getValue().name, msg, now));
+        System.out.println(createMessage(entry.getValue().name, msg, now));
       }
     }
   }
 
   public void logoutMessage(Socket sender){
-    for (Map.Entry<Socket, PrintStream> entry : this.clients.entrySet()) {
+    LocalDateTime now = LocalDateTime.now();
+    for (Map.Entry<Socket, Tuple> entry : this.clients.entrySet()) {
       if (entry.getKey() != sender) {
-        entry.getValue().println(entry.getKey().getInetAddress().getAddress() + " logged out");
-        System.out.println(entry.getKey().getInetAddress().getAddress() + " logged out");
+        entry.getValue().stream.println(createLogoutMessage(entry.getValue().name, now));
+        System.out.println(createLogoutMessage(entry.getValue().name, now));
       }
     }
   }
@@ -71,16 +72,28 @@ public class Server {
   }
 
   public void closeConnection(Socket client) throws IOException {
-    System.out.println(client.getInetAddress() + " disconnected from the server");
+    System.out.println(this.clients.get(client).name + " disconnected from the server");
     client.close();
   }
 
-  private static String createMessage(String message, LocalDateTime now) {
+  private String createLogoutMessage(String sender, LocalDateTime now){
     StringBuilder sb = new StringBuilder();
 
-    sb.append("Mensagem ");
+    sb.append(sender);
+    sb.append(" logged out");
+    sb.append(" at ");
+    sb.append(formatTime(now).replace(':', 'h'));
+
+    return sb.toString();
+  }
+
+  private static String createMessage(String sender, String message, LocalDateTime now) {
+    StringBuilder sb = new StringBuilder();
+
+    sb.append(sender);
+    sb.append(" says ");
     sb.append(message);
-    sb.append(" recebida as ");
+    sb.append(" at ");
     sb.append(formatTime(now).replace(':', 'h'));
 
     return sb.toString();
@@ -91,5 +104,15 @@ public class Server {
 
     String formatDateTime = time.format(formatter);
     return formatDateTime;
+  }
+
+  public class Tuple{
+    public String name;
+    public PrintStream stream;
+
+    public Tuple(String name, PrintStream stream){
+      this.name = name;
+      this.stream = stream;
+    }
   }
 }
