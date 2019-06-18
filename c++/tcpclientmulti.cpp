@@ -14,18 +14,23 @@
 #define REMOTE_SERVER_PORT 1500
 #define MAX_MSG 256
 
+int ative;
 
 using namespace std;
 
+void * listeningFunc(int* socket, char* clientProgram);
+void * speakingFunc(int* socket, char* clientProgram);
 
 int main(int argc, char *argv[])
 {
   int clientSocket, rc, cn, n;
   struct sockaddr_in remoteServAddr;
   struct hostent * h;
-  string msgToSend;
-  char msgReceived[MAX_MSG];
   socklen_t addr_size;
+  string msgToSend;
+  thread listening;
+  thread speaking;
+
 
   /* VERIFICA OS ARGUMENTOS PASSADOS POR LINHA DE COMANDO */
   if (argc < 2)
@@ -72,12 +77,93 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
+  listening = thread(listeningFunc,&clientSocket,argv[0]); 
+
+  if(listening.joinable()){
+    listening.join();
+  }
+
+
+
+
   string sair = "sair";
+  ative = 1;
 
   //Loop de comunicação, enquanto o cliente não digitar sair
   while(1) {
 
-    cout << argv[0] << ": Digite a mensagem:";
+     cout << argv[0] << ": Digite a mensagem:";
+     getline(cin,msgToSend);
+
+     // Enviar mensagem para servidor
+     n = write(clientSocket, msgToSend.c_str() , strlen(msgToSend.c_str()) + 1);
+
+     if( n < 0)
+     {
+       cout << argv[0] << ": Falha no envio da mensagem." << endl;
+       close(clientSocket);
+       exit(1);
+     }
+    
+
+     if (msgToSend == sair){
+       cout << argv[0] << ": Cliente encerrando conexão." << endl;
+       ative = 0;
+       break;
+     }
+
+  //   n = 0;
+
+  //   n = read(clientSocket, msgReceived, MAX_MSG-1);
+  //   if (n < 0)
+  //   {
+  //     cout << argv[0] << ": Recebimento falhou." << endl;
+  //     close(clientSocket);
+  //     exit(1);
+  //   }
+
+  //   cout << argv[0] << ": " << msgReceived << endl;
+
+    
+
+   }
+
+  close(clientSocket);
+  
+  return 0;
+}
+
+void * listeningFunc(int* socket, char* clientProgram){
+  int clientSocket = *(socket);
+  int n = 0;
+  char msgReceived[MAX_MSG];
+
+  while (ative ){
+
+    n = read(clientSocket, msgReceived, MAX_MSG-1);
+
+    if (n < 0)
+    {
+      cout << clientProgram << ": Recebimento falhou." << endl;
+      close(clientSocket);
+      exit(1);
+    }
+
+    cout << clientProgram << ": " << msgReceived << endl;
+
+  }
+   
+
+}
+
+void * speakingFunc(int* socket, char* clientProgram){
+  string sair = "sair";
+  int clientSocket = *(socket);
+  int n = 0;
+  string msgToSend;
+
+  while(1){
+    cout << clientProgram << ": Digite a mensagem: ";
     getline(cin,msgToSend);
 
     // Enviar mensagem para servidor
@@ -85,35 +171,20 @@ int main(int argc, char *argv[])
 
     if( n < 0)
     {
-      cout << argv[0] << ": Falha no envio da mensagem." << endl;
+      cout << clientProgram << ": Falha no envio da mensagem." << endl;
       close(clientSocket);
       exit(1);
     }
     
-    //Ler a mensagem do servidor
-    //memset(msgReceived, '0' ,sizeof(msgReceived));
-    
-    n = 0;
-
-    n = read(clientSocket, msgReceived, MAX_MSG-1);
-    if (n < 0)
-    {
-      cout << argv[0] << ": Recebimento falhou." << endl;
-      close(clientSocket);
-      exit(1);
-    }
-
-    cout << argv[0] << ": Do servidor -> " << msgReceived << endl;
 
     if (msgToSend == sair){
-      cout << argv[0] << ": Cliente encerrando conexão." << endl;
+      cout << clientProgram << ": Cliente encerrando conexão." << endl;
       break;
     }
-
-
   }
 
   close(clientSocket);
-  
-  return 0;
+
 }
+
+

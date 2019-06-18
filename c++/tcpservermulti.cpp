@@ -17,23 +17,25 @@
 
 #define LOCAL_SERVER_PORT 1500
 #define MAX_MSG 256
-#define MAX_CON 100
+#define MAX_CON 50
 
 using namespace std;
 
 char msg[MAX_MSG];
 string buffer;
 mutex m;
+vector<int> todosClientesConectados;
 
 void * socketThread(int* nSocket, char* server, short unsigned int portaClient, char * IPClient);
 
 int main(int argc, char *argv[])
 {
   int sockfd, newsockfd;
-  int rc, lt, n, i;
+  int rc, lt, n, i, conexoes;
   socklen_t cliLen;
   struct sockaddr_in cliAddr, servAddr;
   thread mythreads[MAX_CON];
+  
 
 
 
@@ -70,7 +72,7 @@ int main(int argc, char *argv[])
   cout << argv[0] << ": ouvindo até " << MAX_CON << " clientes" << endl;
 
 
-  i=0;
+  conexoes=0;
   while(1){
     cliLen = sizeof(cliAddr);
 
@@ -83,12 +85,15 @@ int main(int argc, char *argv[])
       << LOCAL_SERVER_PORT << endl;
       exit(1);
     }
+
+    /*Guardar os clientes para enviar mensagem */
+    todosClientesConectados.push_back(newsockfd);
+
     cout << argv[0] << ": estou conectado com " << inet_ntoa(cliAddr.sin_addr) << " na porta "
     << ntohs(cliAddr.sin_port) << endl;
 
-    mythreads[i] = thread(socketThread,&newsockfd,argv[0], ntohs(cliAddr.sin_port), inet_ntoa(cliAddr.sin_addr)); 
+    mythreads[conexoes++] = thread(socketThread,&newsockfd,argv[0], ntohs(cliAddr.sin_port), inet_ntoa(cliAddr.sin_addr)); 
 
-    i++;
 
     if( i >= MAX_CON)
     {
@@ -105,6 +110,11 @@ int main(int argc, char *argv[])
     
   }
 
+  for(i=0; i < conexoes; i++){
+    if(mythreads[i].joinable()){
+      mythreads[i++].join();
+    }
+  }
 
 
   close(sockfd);
@@ -130,49 +140,75 @@ void * socketThread(int* nSocket, char* server, short unsigned int portaClient, 
 
     m.lock(); // inicio bloqueio
     string msgStr = msg;
-    
-    if (msgStr == "sair") { 
-      cout << server << ": Servidor encerrando em TCP(" << portaClient << ")..." << endl; 
-      break; 
-    }
-    
-
-    n = 0; 
+    string portaStr = to_string(portaClient);
+    string ipStr = IPClient;
 
     // Informações sobre hora
     std::chrono::system_clock::time_point today = std::chrono::system_clock::now();
     time_t tt;
     tt = std::chrono::system_clock::to_time_t ( today );
 
-    cout << server << ": Mensagem de "<< IPClient << "TCP(" << portaClient << "): " << msgStr << "\nRecebida em (hora local): " <<  ctime(&tt);
+    if (msgStr == "sair") { 
+      buffer = ": " + ipStr;
+      buffer += " TCP(";
+      buffer += portaStr;
+      buffer += ") desconectou em (hora local) - ";
+      buffer += ctime(&tt);
 
-    
-/* 7. ENVIANDO MENSAGEM RECEBIDA PARA O CLIENTE*/
-    
-    buffer = "Mensagem " + msgStr;
-    buffer += " recebida em (hora local): ";
-    buffer += ctime(&tt);
+      cout << server << ": " << ipStr << " TCP(" << portaStr << ") desconectou em (hora local) - " << ctime(&tt);
+
+    }else{
+
+      buffer = ": Mensagem de " + ipStr;
+      buffer += " TCP(";
+      buffer += portaStr;
+      buffer += "): ";
+      buffer += msgStr;
+      buffer += " Recebida em (hora local): ";
+      buffer += ctime(&tt);
+
+      cout << server << ": Mensagem de "<< ipStr << "TCP(" << portaStr << "): " << msgStr << "\nRecebida em (hora local): " <<  ctime(&tt);
+    }
     
     m.unlock(); // fim  bloqueio
 
+    n = 0;
     sleep(1);
+  /* 7. ENVIANDO MENSAGEM PARA O CLIENTES CONECTADOS
+ CLIENTE*/
+    for(int client : todosClientesConectados){
+      if(client != newSocket){
+         n = write(newSocket, buffer.c_str() , strlen(buffer.c_str()) + 1);
 
-    n = write(newSocket, buffer.c_str() , strlen(buffer.c_str()) + 1);
+        if( n < 0)
+        {
+          cout << server << ": Falha no envio da mensagem." << endl;
+          close(newSocket);
+          exit(1);
+        }   
 
-    if( n < 0)
-    {
-      cout << server << ": Falha no envio da mensagem." << endl;
-      close(newSocket);
-      exit(1);
-    }   
+      }else{
+        //  todosClientesConectados.erase(client);
+        for (vector<int>::iterator it = todosClientesConectados.begin();
+                    it != todosClientesConectados.end(); it++) {
+          cout << "todos clientes: " << *it << endl;
+          if(*it == newSocket)
+            todosClientesConectados.erase(it);
+          
+        }
+      }
+    }
+   
 
     if (msgStr == "sair") { 
-      cout << server << ": Servidor encerrando em TCP(" << porta << ")..." << endl; 
+      //depois de enviar mensagens, sair.
       break; 
     }
 
   }
-  cout << server << ": "<< IPClient << "TCP(" << portaClient << "): Desconectou." << endl;
+
+
+  
   close(newSocket);
 
 }
