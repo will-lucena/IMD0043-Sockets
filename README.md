@@ -118,6 +118,16 @@ Abra um terminal e ative o servidor:
 Abra outro terminal e execute o cliente:
 
 		python3 tcpclientmulti.py
+		
+## Compilando e Rodando TCP Multithreading chat (no caminho: python/):
+
+Abra um terminal e ative o servidor:
+
+		python tcpbroadserver.py
+
+Abra outro terminal e execute o cliente:
+
+		python tcpbroadclient.py
 
 
 # JAVA
