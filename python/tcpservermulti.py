@@ -1,16 +1,5 @@
 #!/usr/bin/env python3
 
-# Importando a biblioteca de datetime
-from datetime import datetime
-
-# Utilizando o parametro datetime.now 
-# para pegar a hora do SO
-hora_atual = datetime.now()
-
-# Utilizando o parametro strftime 
-# para personalizar o formato da hora
-view_hora = hora_atual.strftime('%H:%M')
-
 # Importando a biblioteca de socket
 import socket
 import os
@@ -65,11 +54,11 @@ while True:
                 # 5. RECV
                 data = connection.recv(1024).decode()
                 print('##################################################################')
-                print('Mensagem {!r}'.format(data)  + ' recebida as {!r}'.format(view_hora) + ' por {!r}'.format(client_address))
+                print('Cliente {!r}'.format(client_address) + ' disse: {!r}'.format(data))
                 if (data != 'sair' and data != ''):
 
                     # 6. SEND
-                    print('Enviando dados de volta ao cliente')
+                    print('Enviando {!r}'.format(data) + ' de volta para {!r}'.format(client_address))
                     connection.sendall(data.encode())
                     print('##################################################################')
                 else:
