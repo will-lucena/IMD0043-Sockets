@@ -73,16 +73,14 @@ int main(int argc, char *argv[])
 
 
   conexoes=0;
+  
   while(1){
     cliLen = sizeof(cliAddr);
 
 
 
 /* 4. ACCEPT*/
-    cout << argv[0] << ": Aguardando conexão "<< i+1 << "..." << endl;
     newsockfd = accept(sockfd, (struct sockaddr *) &cliAddr, &cliLen);
-
-    vectorClients.push_back(newsockfd);
 
     if (newsockfd < 0)
     {
@@ -100,13 +98,13 @@ int main(int argc, char *argv[])
     mythreads[conexoes++] = thread(socketThread,&newsockfd,argv[0], ntohs(cliAddr.sin_port), inet_ntoa(cliAddr.sin_addr)); 
 
 
-    if( i >= MAX_CON)
+    if( conexoes >= MAX_CON)
     {
-      i = 0;
+      conexoes = 0;
       while(i < MAX_CON)
       {
-        if(mythreads[i].joinable()){
-          mythreads[i++].join();
+        if(mythreads[conexoes].joinable()){
+          mythreads[conexoes++].join();
         }
       }
       i = 0;
@@ -117,7 +115,7 @@ int main(int argc, char *argv[])
 
   for(i=0; i < conexoes; i++){
     if(mythreads[i].joinable()){
-      mythreads[i++].join();
+      mythreads[i].join();
     }
   }
 
@@ -133,14 +131,12 @@ void * socketThread(int* nSocket, char* server, short unsigned int portaClient, 
  // int newSocket = *((int *)arg);
   int n;
   while(1){
-/* 5. RECEBENDO MENSAGEM DO CLIENTE*/
-    memset(&msg, '0', sizeof(msg));
+/* 5. RECEBENDO MENSAGEM DO CLIENTE*/   
     n = read(newSocket,msg,MAX_MSG-1);
     if (n < 0)
     {
       cout << server << ": erro na leitura do socket " << endl;
-      close(newSocket);
-      exit(1);
+      break;
     } 
 
     m.lock(); // inicio bloqueio
@@ -154,7 +150,7 @@ void * socketThread(int* nSocket, char* server, short unsigned int portaClient, 
     tt = std::chrono::system_clock::to_time_t ( today );
 
     if (msgStr == "sair") { 
-      buffer = ": " + ipStr;
+      buffer = ipStr;
       buffer += " TCP(";
       buffer += portaStr;
       buffer += ") desconectou em (hora local) - ";
@@ -164,55 +160,52 @@ void * socketThread(int* nSocket, char* server, short unsigned int portaClient, 
 
     }else{
 
-      buffer = ": Mensagem de " + ipStr;
+      buffer = "Mensagem de " + ipStr;
       buffer += " TCP(";
       buffer += portaStr;
       buffer += "): ";
       buffer += msgStr;
-      buffer += " Recebida em (hora local): ";
+      buffer += "\nRecebida em (hora local): ";
       buffer += ctime(&tt);
 
-      cout << server << ": Mensagem de "<< ipStr << "TCP(" << portaStr << "): " << msgStr << "\nRecebida em (hora local): " <<  ctime(&tt);
+      cout << "> Mensagem de "<< ipStr << "TCP(" << portaStr << "): " << msgStr << "\n> Recebida em (hora local): " <<  ctime(&tt);
     }
     
     m.unlock(); // fim  bloqueio
 
     n = 0;
     sleep(1);
-  /* 7. ENVIANDO MENSAGEM PARA O CLIENTES CONECTADOS
- CLIENTE*/
-    for(int client : todosClientesConectados){
-      if(client != newSocket){
-         n = write(newSocket, buffer.c_str() , strlen(buffer.c_str()) + 1);
+    vector<int>::iterator clientePos;
+  /* 7. ENVIANDO MENSAGEM PARA O CLIENTES CONECTADOS*/
+    for (vector<int>::iterator sk = todosClientesConectados.begin();
+                    sk != todosClientesConectados.end(); sk++) {
+      
+      if(*sk != newSocket){
+
+         n = write(*sk, buffer.c_str() , strlen(buffer.c_str()) + 1);
 
         if( n < 0)
         {
           cout << server << ": Falha no envio da mensagem." << endl;
-          close(newSocket);
-          exit(1);
+          break;
         }   
 
       }else{
-        //  todosClientesConectados.erase(client);
-        for (vector<int>::iterator it = todosClientesConectados.begin();
-                    it != todosClientesConectados.end(); it++) {
-          cout << "todos clientes: " << *it << endl;
-          if(*it == newSocket)
-            todosClientesConectados.erase(it);
+        //guarda posição do cliente caso precise apagar da lista
+        clientePos = sk;
           
-        }
       }
     }
    
 
     if (msgStr == "sair") { 
+      //caso o cliente esteja desconectando tem que tirar da lista de clientes
+      todosClientesConectados.erase(clientePos);
       //depois de enviar mensagens, sair.
       break; 
     }
 
   }
-
-
   
   close(newSocket);
 
