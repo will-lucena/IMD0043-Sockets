@@ -76,9 +76,14 @@ int main(int argc, char *argv[])
   while(1){
     cliLen = sizeof(cliAddr);
 
+
+
 /* 4. ACCEPT*/
     cout << argv[0] << ": Aguardando conexão "<< i+1 << "..." << endl;
     newsockfd = accept(sockfd, (struct sockaddr *) &cliAddr, &cliLen);
+
+    vectorClients.push_back(newsockfd);
+
     if (newsockfd < 0)
     {
       cout << argv[0] << ": erro no accept"
@@ -107,7 +112,7 @@ int main(int argc, char *argv[])
       i = 0;
     }
 
-    
+
   }
 
   for(i=0; i < conexoes; i++){
