@@ -23,8 +23,8 @@ https://dzone.com/articles/parallel-tcpip-socket-server-with-multi-threading
 ## Compilando e Rodando UDP (no caminho: c++/):
 Abra um terminal e compile:
 
-		g++ -std=c++11 udpserver.cpp -o udpsrv
-		g++ -std=c++11 udpclient.cpp -o udpcli 
+		g++ -std=c++11 udpserver.cpp -o udpsrv.exec
+		g++ -std=c++11 udpclient.cpp -o udpcli.exec
 		
 Ative o servidor:
 
@@ -40,8 +40,8 @@ Abra outro terminal e execute o cliente (./udpcli <servidor> <mensagem 1> <mensa
 ## Compilando e Rodando TCP (no caminho: c++/):
 Abra um terminal e compile:
 
-		g++ -std=c++11 tcpserver.cpp -o tcpsrv
-		g++ -std=c++11 tcpclient.cpp -o tcpcli 
+		g++ -std=c++11 tcpserver.cpp -o tcpsrv.exec
+		g++ -std=c++11 tcpclient.cpp -o tcpcli.exec 
 		
 Ative o servidor:
 
@@ -54,8 +54,8 @@ Abra outro terminal e execute o cliente (./tcpcli <servidor> <mensagem 1> <mensa
 ## Compilando e Rodando TCP Multithreading (no caminho: c++/):
 Abra um terminal e compile:
 
-		g++ -std=c++11 -pthread -lpthread tcpservermulti.cpp -o tcpsrvmult
-		g++ -std=c++11 tcpclientmulti.cpp -o tcpclimult 
+		g++ -std=c++11 -pthread -lpthread tcpservermulti.cpp -o tcpsrvmult.exec
+		g++ -std=c++11 -pthread -lpthread tcpclientmulti.cpp -o tcpclimult.exec
 		
 Abra um terminal e ative o servidor:
 
